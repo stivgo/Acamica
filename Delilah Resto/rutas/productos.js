@@ -77,7 +77,7 @@ router.put('/productos/:id', async(req, res, next) => {
     `
     try {
         await db.ejecutarConsulta(query, { nombre, precio, id }, false)
-        const nProducto = await obtenerProductoID(id)
+        const nProducto = (await obtenerProductoID(id)[0])
         res.status(200).json({ data: nProducto })
     } catch (error) {
         next(error)
@@ -93,7 +93,7 @@ router.delete('/productos/:id', async(req, res, next) => {
     const query = 'DELETE FROM producto WHERE id_producto = :id'
 
     try {
-        const data = await db.ejecutarConsulta(query, { id }, false)
+        await db.ejecutarConsulta(query, { id }, false)
 
         res.status(204).send('Se ha eliminado el producto')
 
@@ -120,4 +120,7 @@ const obtenerProductoID = async(id) => {
     return producto
 }
 
-module.exports = router
+module.exports = {
+    router,
+    obtenerProductoID
+}

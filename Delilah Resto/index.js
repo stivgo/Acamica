@@ -4,13 +4,15 @@ const jwt = require('jsonwebtoken')
 const db = require('./db/db')
 const productos = require('./rutas/productos')
 const usuarios = require('./rutas/usuarios')
+const pedidos = require('./rutas/pedidos')
 
 //Conexión con la base de datos
 const sequelize = db.db
 const servidor = express()
 servidor.use(express.json())
-servidor.use(productos)
+servidor.use(productos.router)
 servidor.use(usuarios)
+servidor.use(pedidos)
 
 
 // servidor.post('/login', (req, res) => {

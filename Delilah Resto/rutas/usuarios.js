@@ -8,6 +8,7 @@ const router = express.Router();
 //Creación de usario
 router.post('/registrarse', async(req, res, next) => {
     console.log(req.body)
+
     const emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i
     const { username, nombre, apellido, correo, telefono, direccion, contrasena } = req.body
     if (username && nombre && apellido && correo && telefono && direccion && contrasena) {
@@ -95,11 +96,11 @@ router.put('/usuarios/:id', async(req, res, next) => {
     const query = `
             UPDATE usuario
             SET  username = :username, nombre=:nombre, apellido=:apellido, correo=:correo, telefono=:telefono, direccion=:direccion, contrasena=:contrasena
-            WHERE id_usuario = :id
+            WHERE id_usuario = :id;
     `
     try {
         await db.ejecutarConsulta(query, { username, nombre, apellido, correo, telefono, direccion, contrasena, id }, false)
-        const nUsuario = await obtenerProductoID(id)
+        const nUsuario = await obtenerUsuarioID(id)
         res.status(200).json({ data: nUsuario })
     } catch (error) {
         next(error)
@@ -114,7 +115,7 @@ router.delete('/usuario/:id', async(req, res, next) => {
     const query = 'DELETE FROM usuario WHERE id_usuario = :id'
 
     try {
-        const data = await db.ejecutarConsulta(query, { id }, false)
+        await db.ejecutarConsulta(query, { id }, false)
 
         res.status(204).send('Se ha eliminado el producto')
 
