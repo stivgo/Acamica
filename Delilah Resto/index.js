@@ -11,18 +11,9 @@ const sequelize = db.db
 const servidor = express()
 servidor.use(express.json())
 servidor.use(productos.router)
-servidor.use(usuarios)
+servidor.use(usuarios.router)
 servidor.use(pedidos)
 
-
-// servidor.post('/login', (req, res) => {
-//     const { usuario, contrasena } = req.body
-
-// })
-
-servidor.post('/registrarse', (req, res, next) => {
-
-})
 
 //Middleware sobre error general
 servidor.use((err, req, res, next) => {

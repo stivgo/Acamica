@@ -1,7 +1,76 @@
 const db = require('../db/db')
-const express = require("express");
+const express = require("express")
+const jwt = require('jsonwebtoken')
 
-const router = express.Router();
+const router = express.Router()
+const SECRET_KEY='^D%U^XuLWeI3w%6ujyLY5'
+
+//Funciones y Middlewares
+
+//Funcion generar un token
+const generarToken = (usuario)=>{
+    let token = jwt.sign({
+        id:usuario.id_usuario,
+        username: usuario.username,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        correo: usuario.correo,
+        rol:usuario.rol
+    },SECRET_KEY)
+    return token
+}
+//Funcion verificar Token
+const verificarToken = (token)=>{
+    try{
+        const data = jwt.verify(token,SECRET_KEY)
+        return data
+    }catch(error){
+        console.log(error)
+        return null
+    }
+}
+
+//middleware de verificacion de token
+const midVerificarToken = (req,res,next)=>{
+    const {authorization} = req.headers
+    const token = authorization&& authorization.split(' ')[1]
+    const usuario = verificarToken(token)
+
+    if(usuario){
+        req.usuario = usuario
+        next()
+    }else{
+        res.status(401).json({mensaje:'token invalido'})
+        return
+    }
+}
+
+//Middleware para verificar rol y dar permisos 
+const verificarUsuario = (req,res,next) =>{
+    console.log(req.params)
+    const {id} = req.params
+    console.log(req.usuario)
+    const idUsuario = req.usuario.id
+    const {rol} = req.usuario
+
+    if(id == idUsuario || rol === 'admin'){
+        next()
+    }else{
+        res.status(401).json({error: 'No tiene derechos para hacer el requesito'})
+    }
+}
+
+//Middleware para verificar rol y dar permisos 
+const verificarAdmin = (req,res,next) =>{
+    const {rol} = req.usuario
+
+    if(rol === 'admin'){
+        next()
+    }else{
+        res.status(401).json({error: 'No tiene derechos para hacer el requesito'})
+    }
+}
+
 
 //Endpoints de Usuario
 
@@ -45,7 +114,7 @@ router.post('/registrarse', async(req, res, next) => {
 })
 
 //Obtener usuarios
-router.get('/usuarios', async(req, res, next) => {
+router.get('/usuarios', midVerificarToken, verificarAdmin, async(req, res, next) => {
     const query = 'SELECT * FROM usuario'
     try {
         const data = await db.ejecutarConsulta(query, null, true)
@@ -56,12 +125,12 @@ router.get('/usuarios', async(req, res, next) => {
 })
 
 //Obtener usuarios por ID
-router.get('/usuarios/:id', async(req, res, next) => {
+router.get('/usuarios/:id', midVerificarToken,verificarUsuario,async(req, res, next) => {
     const { id } = req.params
 
     const query = `
             SELECT * FROM usuario
-            WHERE id_producto=:id;
+            WHERE id_usuario=:id;
     `
     try {
         const data = await db.ejecutarConsulta(query, { id }, true)
@@ -75,7 +144,7 @@ router.get('/usuarios/:id', async(req, res, next) => {
 
 
 //actualizar usuario por id
-router.put('/usuarios/:id', async(req, res, next) => {
+router.put('/usuarios/:id', midVerificarToken,verificarUsuario,async(req, res, next) => {
     const id = parseInt(req.params.id)
     let { username, nombre, apellido, correo, telefono, direccion, contrasena } = req.body
     telefono = parseInt(telefono)
@@ -109,7 +178,7 @@ router.put('/usuarios/:id', async(req, res, next) => {
 })
 
 //Eliminar usuario por ID
-router.delete('/usuario/:id', async(req, res, next) => {
+router.delete('/usuarios/:id', midVerificarToken,verificarUsuario, async(req, res, next) => {
     const id = parseInt(req.params.id)
 
     const query = 'DELETE FROM usuario WHERE id_usuario = :id'
@@ -117,7 +186,7 @@ router.delete('/usuario/:id', async(req, res, next) => {
     try {
         await db.ejecutarConsulta(query, { id }, false)
 
-        res.status(204).send('Se ha eliminado el producto')
+        res.status(204).send('Se ha eliminado el usuario')
 
     } catch (error) {
         next(error)
@@ -171,4 +240,52 @@ const obtenerUsuarioID = async(id) => {
     return usuario
 }
 
-module.exports = router
+//Se obtiene la información de un usuario a traves de su correo
+const obtenerUsuarioCorreo = async(correo) => {
+    const query = `
+            SELECT * FROM usuario
+            WHERE correo=:correo;
+    `
+    let usuario
+    try {
+        usuario = await db.ejecutarConsulta(query, { correo }, true)
+    } catch (error) {
+        console.log(error)
+    }
+    return usuario
+}
+
+
+//Login del usuario
+router.post('/login', async (req,res,next)=>{
+    const {correo,contrasena} = req.body
+
+    let estado = false
+    const usuario = (await obtenerUsuarioCorreo(correo))
+
+    if(!usuario[0]){
+        res.status(401).json({mensaje: 'correo o contraseña incorrecta'})
+        return
+    }
+
+    if(usuario[0].contrasena === contrasena){
+        estado = true
+    }
+
+    if(estado){
+        const token = generarToken(usuario[0])
+        res.status(200).json({token})
+    }else{
+        res.status(401).json({mensaje: 'correo o contraseña incorrecta'})
+    }
+    
+})
+
+
+module.exports = {
+    router,
+    midVerificarToken,
+    verificarUsuario,
+    verificarAdmin
+
+}

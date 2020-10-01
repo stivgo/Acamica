@@ -1,15 +1,17 @@
 const db = require('../db/db')
 const producto = require('./productos')
 const express = require("express");
+const usuario = require('./usuarios')
 
 const router = express.Router();
 
 //Endpoints de la tabla Pedido
 
 //Creación de pedido
-router.post('/pedidos', async(req, res, next) => {
+router.post('/pedidos', usuario.midVerificarToken, async(req, res, next) => {
     console.log(req.body)
-    let id_usuario = 1
+    let usuarioP = req.usuario
+    let id_usuario = usuarioP.id
     let fecha = new Date()
     let estado = 'recibido'
     let total = 0
@@ -86,7 +88,7 @@ router.post('/pedidos', async(req, res, next) => {
                 next(error)
             }
 
-            res.status(201).json({ data: data })
+            res.status(201).json({data: data} )
 
         } else {
             res.status(400).json({ error: 'No corresponde las cantidades con el numero de productos' })
@@ -98,23 +100,47 @@ router.post('/pedidos', async(req, res, next) => {
 })
 
 //Leer todos los pedidos
-router.get('/pedidos', async(req, res, next) => {
-    let data 
-    const query =`
-            SELECT p.estado, p.fecha, p.id_pedido, p.formaPago, p.total ,u.username, p.direccion
-            FROM Proyecto.pedido as p
-            JOIN Proyecto.usuario as u
-            ON p.id_usuario=u.id_usuario;
-            `
-    
-    try {
-         data = await db.ejecutarConsulta(query, null, true)
-        
-        
-        //res.status(200).json({ data })
-    } catch (error) {
-        next(error)
+router.get('/pedidos', usuario.midVerificarToken, async(req, res, next) => {
+
+    let usuarioP = req.usuario
+    console.log(usuarioP)
+
+    let data
+    if (usuarioP.rol === 'admin'){
+        const query =`
+                SELECT p.estado, p.fecha, p.id_pedido, p.formaPago, p.total ,u.username, p.direccion
+                FROM pedido as p
+                JOIN usuario as u
+                ON p.id_usuario=u.id_usuario;
+                `
+        try {
+            data = await db.ejecutarConsulta(query, null, true)
+               } catch (error) {
+                   next(error)
+               }
     }
+    else{
+        let id_usuario = usuarioP.id
+        const query =`
+                SELECT p.estado, p.fecha, p.id_pedido, p.formaPago, p.total ,u.username, p.direccion
+                FROM pedido as p
+                JOIN usuario as u
+                ON p.id_usuario=u.id_usuario
+                WHERE p.id_usuario = :id_usuario;
+                `
+
+
+        try {
+            data = await db.ejecutarConsulta(query, {id_usuario}, true)
+           
+           
+           //res.status(200).json({ data })
+       } catch (error) {
+           next(error)
+       }
+
+    }
+    
 
     console.log(data.length)
     for (let i=0;i<data.length;i++){
@@ -138,11 +164,11 @@ router.get('/pedidos', async(req, res, next) => {
         } 
     }
 
-    res.status(200).json({ data: data })
+    res.status(200).json( data )
 })
 
 //actualizar pedido
-router.put('/pedidos/:id', async(req, res, next) => {
+router.put('/pedidos/:id',usuario.midVerificarToken, usuario.verificarAdmin, async(req, res, next) => {
     const id = parseInt(req.params.id)
     let { estado } = req.body
     const pedido = (await obtenerPedidoID(id))[0]
@@ -159,7 +185,7 @@ router.put('/pedidos/:id', async(req, res, next) => {
     try {
         await db.ejecutarConsulta(query, { estado,id }, false)
         const nPedido = (await obtenerPedidoID(id)[0])
-        res.status(200).json({ data: nPedido })
+        res.status(200).json(nPedido)
     } catch (error) {
         next(error)
     }

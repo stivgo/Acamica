@@ -1,13 +1,16 @@
 const db = require('../db/db')
 const express = require("express");
+const usuario = require('./usuarios')
 
 const router = express.Router();
+
+
 
 
 //Endpoints de la tabla Producto
 
 //Creación de producto
-router.post('/productos', async(req, res, next) => {
+router.post('/productos',usuario.midVerificarToken, usuario.verificarAdmin, async(req, res, next) => {
     console.log(req.body)
     const { nombre, precio } = req.body
     if (nombre && precio) {
@@ -18,7 +21,7 @@ router.post('/productos', async(req, res, next) => {
         try {
             const data = db.ejecutarConsulta(query, { nombre, precio }, false)
 
-            res.status(201).json({ data })
+            res.status(201).json({ data:data })
         } catch (error) {
             next(error)
         }
@@ -57,7 +60,7 @@ router.get('/productos', async(req, res, next) => {
 })
 
 //Actualizar producto
-router.put('/productos/:id', async(req, res, next) => {
+router.put('/productos/:id', usuario.midVerificarToken, usuario.verificarAdmin,async(req, res, next) => {
     const id = parseInt(req.params.id)
     let { nombre, precio } = req.body
     precio = parseInt(precio)
@@ -87,7 +90,7 @@ router.put('/productos/:id', async(req, res, next) => {
 
 
 //Eliminar producto
-router.delete('/productos/:id', async(req, res, next) => {
+router.delete('/productos/:id', usuario.midVerificarToken, usuario.verificarAdmin, async(req, res, next) => {
     const id = parseInt(req.params.id)
 
     const query = 'DELETE FROM producto WHERE id_producto = :id'
@@ -95,7 +98,7 @@ router.delete('/productos/:id', async(req, res, next) => {
     try {
         await db.ejecutarConsulta(query, { id }, false)
 
-        res.status(204).send('Se ha eliminado el producto')
+        res.status(204).json({data:'Se ha eliminado el producto'})
 
     } catch (error) {
         next(error)
