@@ -180,11 +180,7 @@ router.get("/pedidos", usuario.midVerificarToken, async (req, res, next) => {
 });
 
 //actualizar pedido
-router.put(
-  "/pedidos/:id",
-  usuario.midVerificarToken,
-  usuario.verificarAdmin,
-  async (req, res, next) => {
+router.put("/pedidos/:id",usuario.midVerificarToken,usuario.verificarAdmin, async (req, res, next) => {
     const id = parseInt(req.params.id);
     let { estado } = req.body;
     const pedido = (await obtenerPedidoID(id))[0];

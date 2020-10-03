@@ -149,11 +149,7 @@ router.post("/registrarse", async (req, res, next) => {
 });
 
 //Obtener usuarios
-router.get(
-  "/usuarios",
-  midVerificarToken,
-  verificarAdmin,
-  async (req, res, next) => {
+router.get("/usuarios",midVerificarToken,verificarAdmin,async (req, res, next) => {
     const query = "SELECT * FROM usuario";
     try {
       const data = await db.ejecutarConsulta(query, null, true);
@@ -165,11 +161,7 @@ router.get(
 );
 
 //Obtener usuarios por ID
-router.get(
-  "/usuarios/:id",
-  midVerificarToken,
-  verificarUsuario,
-  async (req, res, next) => {
+router.get("/usuarios/:id",midVerificarToken,verificarUsuario, async (req, res, next) => {
     const { id } = req.params;
 
     const query = `
@@ -187,11 +179,7 @@ router.get(
 );
 
 //actualizar usuario por id
-router.put(
-  "/usuarios/:id",
-  midVerificarToken,
-  verificarUsuario,
-  async (req, res, next) => {
+router.put("/usuarios/:id",midVerificarToken,verificarUsuario, async (req, res, next) => {
     const id = parseInt(req.params.id);
     let {
       username,
@@ -248,11 +236,7 @@ router.put(
 );
 
 //Eliminar usuario por ID
-router.delete(
-  "/usuarios/:id",
-  midVerificarToken,
-  verificarUsuario,
-  async (req, res, next) => {
+router.delete("/usuarios/:id",midVerificarToken,verificarUsuario, async (req, res, next) => {
     const id = parseInt(req.params.id);
 
     const query = "DELETE FROM usuario WHERE id_usuario = :id";

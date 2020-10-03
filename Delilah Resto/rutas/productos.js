@@ -7,11 +7,7 @@ const router = express.Router();
 //Endpoints de la tabla Producto
 
 //Creación de producto
-router.post(
-  "/productos",
-  usuario.midVerificarToken,
-  usuario.verificarAdmin,
-  async (req, res, next) => {
+router.post("/productos",usuario.midVerificarToken,usuario.verificarAdmin, async (req, res, next) => {
     console.log(req.body);
     const { nombre, precio } = req.body;
     if (nombre && precio) {
@@ -61,11 +57,7 @@ router.get("/productos", async (req, res, next) => {
 });
 
 //Actualizar producto
-router.put(
-  "/productos/:id",
-  usuario.midVerificarToken,
-  usuario.verificarAdmin,
-  async (req, res, next) => {
+router.put("/productos/:id",usuario.midVerificarToken,usuario.verificarAdmin,async (req, res, next) => {
     const id = parseInt(req.params.id);
     let { nombre, precio } = req.body;
     precio = parseInt(precio);
@@ -96,11 +88,7 @@ router.put(
 );
 
 //Eliminar producto
-router.delete(
-  "/productos/:id",
-  usuario.midVerificarToken,
-  usuario.verificarAdmin,
-  async (req, res, next) => {
+router.delete("/productos/:id",usuario.midVerificarToken,usuario.verificarAdmin,async (req, res, next) => {
     const id = parseInt(req.params.id);
 
     const query = "DELETE FROM producto WHERE id_producto = :id";
