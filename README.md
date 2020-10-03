@@ -4,7 +4,7 @@ Tercer Proyecto del programa Desarrollador Web Full Stack de Acamica, se present
 ## Instalacion
 Lo primero es clonar el repositorio al lugar de trabajo, luego de esto dirigirnos a la carpeta Delilah Resto (./Delilah Resto)
 ```
-git clone https://github.com/stivgo/Acamica.git
+https://github.com/stivgo/Delilah-Resto.git
 cd Delilah\ Resto/
 ```
 ## Configurar la Base de datos
