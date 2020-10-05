@@ -25,4 +25,4 @@ npm start
 ```
 
 ## Por Ultimo
-Puede utilizar el archivo de la collección de Postman _Delilah_Postman_collection.json_ para realizar las pruebas correspiendestes a cada uno de los endpoints de esta API, si desea saber más información de la API se encuntra el archivo _Delilah.yaml.
+Puede utilizar el archivo de la collección de Postman _Delilah_Postman_collection.json_ para realizar las pruebas correspiendestes a cada uno de los endpoints de esta API, si desea saber más información de la API se encuntra el archivo _Delilah-1.0.0.yaml_.
