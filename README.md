@@ -5,7 +5,6 @@ Tercer Proyecto del programa Desarrollador Web Full Stack de Acamica, se present
 Lo primero es clonar el repositorio al lugar de trabajo, luego de esto dirigirnos a la carpeta Delilah Resto (./Delilah Resto)
 ```
 https://github.com/stivgo/Delilah-Resto.git
-cd Delilah\ Resto/
 ```
 ## Configurar la Base de datos
 Instalar MySql si este no se encuentra presente, se recomienda el programa MySQL Workbench. Allí configurar el usuario y constraseña. Ya con esto ejecutar el archivo _inicioDB.sql_. Aquí se crean las tablas correspondientes y unos insert de prueba.
