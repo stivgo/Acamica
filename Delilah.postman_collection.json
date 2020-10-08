@@ -699,7 +699,7 @@
 			"response": []
 		},
 		{
-			"name": "Actualizar Pedido",
+			"name": "Actualizar Pedido (Admin)",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -722,6 +722,105 @@
 					"path": [
 						"pedidos",
 						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Pedido (Cliente)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ1c2VyMSIsIm5vbWJyZSI6InVzZXIiLCJhcGVsbGlkbyI6ImFwZWxsaWRvIiwiY29ycmVvIjoiY29ycmVvMUBnbWFpbC5jb20iLCJyb2wiOiJjbGllbnRlIiwiaWF0IjoxNjAxNTEzNzA1fQ.ZfX6F07lDdnykHP-cGIKHShM1EXVuIfG4O5rwMJP60A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"estado\": \"espera\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/pedidos/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pedidos",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Pedido (Admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsIm5vbWJyZSI6ImFkbWluIiwiYXBlbGxpZG8iOiJhZG1pbiIsImNvcnJlbyI6ImFkbWluQGdtYWlsLmNvbSIsInJvbCI6ImFkbWluIiwiaWF0IjoxNjAxNTEzNzAwfQ.wQnU_UEXGfLWjLR-qkC8JTqwLUUBut9HrwbmFlclVE0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/pedidos/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pedidos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Pedido (Cliente)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ1c2VyMSIsIm5vbWJyZSI6InVzZXIiLCJhcGVsbGlkbyI6ImFwZWxsaWRvIiwiY29ycmVvIjoiY29ycmVvMUBnbWFpbC5jb20iLCJyb2wiOiJjbGllbnRlIiwiaWF0IjoxNjAxNTEzNzA1fQ.ZfX6F07lDdnykHP-cGIKHShM1EXVuIfG4O5rwMJP60A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/pedidos/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pedidos",
+						"1"
 					]
 				}
 			},

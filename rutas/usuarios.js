@@ -61,7 +61,7 @@ const verificarUsuario = (req, res, next) => {
   } else {
     res
       .status(401)
-      .json({ error: "No tiene derechos para hacer el requesito" });
+      .json({ error: "No tiene derechos para hacer el requisito" });
   }
 };
 

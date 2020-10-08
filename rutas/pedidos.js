@@ -206,6 +206,28 @@ router.put("/pedidos/:id",usuario.midVerificarToken,usuario.verificarAdmin, asyn
   }
 );
 
+//Eliminar Pedido
+router.delete("/pedidos/:id",usuario.midVerificarToken,usuario.verificarAdmin,async (req, res, next) => {
+    const id = parseInt(req.params.id);
+
+    const query1 = "DELETE FROM pedidoxproducto WHERE id_pedido = :id;";
+    const query2 = "DELETE FROM pedido WHERE id_pedido = :id;"
+
+    try {
+      await db.ejecutarConsulta(query1, { id }, false);
+    } catch (error) {
+      next(error);
+    }
+    try{
+      await db.ejecutarConsulta(query2, { id }, false);
+      res.status(204).send("Se ha eliminado el pedido");
+
+    } catch(error){
+      next(error)
+    }
+  }
+);
+
 //Se obtiene la información de un producto a traves de su id
 const obtenerPedidoID = async (id) => {
   const query = `
